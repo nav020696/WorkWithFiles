@@ -26,6 +26,10 @@ class NameError(Exception):
     def __init__(self, text):
         self.txt = text
 
+class ContainNumbers(Exception):
+    def __init__(self, text):
+        self.txt = text
+
 def get_info():
     is_valid_name = False
     while not is_valid_name:
@@ -33,13 +37,33 @@ def get_info():
             first_name = input("Введите имя: ")
             if len(first_name) < 2:
                 raise NameError("Некорректное имя")
+            elif any(ch.isdigit() for ch in first_name):
+                raise ContainNumbers("Имя содержит числа")
             else:
                 is_valid_name = True
         except NameError as err:
             print(err)
             continue
+        except ContainNumbers as err:
+            print(err)
+            continue
     
-    last_name = input("Введите фамилию: ")
+    is_valid_last_name = False
+    while not is_valid_last_name:
+        try:
+            last_name = input("Введите фамилию: ")
+            if len(last_name) < 2:
+                raise NameError("Некорректная фамилия")
+            elif any(ch.isdigit() for ch in last_name):
+                raise ContainNumbers("В фамилии содержатся числа")
+            else:
+                is_valid_last_name = True
+        except NameError as err:
+            print(err)
+            continue
+        except ContainNumbers as err:
+            print(err)
+            continue
 
     is_valid_phone = False
     while not is_valid_phone:
