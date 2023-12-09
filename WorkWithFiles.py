@@ -74,7 +74,7 @@ def get_info():
             else:
                 is_valid_phone = True
         except ValueError:
-            print("Не валидный номер")
+            print("Не валидный номер телефона")
             continue
         except LenNumberError as err: 
             print(err)
@@ -106,7 +106,22 @@ def write_file(file_name, lst):
         f_writer.writeheader()
         f_writer.writerows(res)
 
+def copy_file(file_name, copy_file_name, number_of_row):
+    res = read_file(file_name)
+    if number_of_row > len(res):
+        print("Строки с таким номером нет в файле для копирования")
+        return
+    res_of_copy = read_file(copy_file_name)
+    obj = res[number_of_row - 1]
+    res_of_copy.append(obj)
+    with open(copy_file_name, "w", encoding='utf-8', newline='') as data:
+        f_writer = DictWriter(data, fieldnames=obj.keys())
+        f_writer.writeheader()
+        f_writer.writerows(res_of_copy)
+
+
 file_name = 'phone.csv'
+copy_file_name = 'copy_phone.csv'
 
 def main():
     while True:
@@ -122,6 +137,23 @@ def main():
             if not exists(file_name):
                 print("Файл отсутствует. Создайте файл")
                 continue 
-            print(*read_file(file_name))
-
+            file_number = input("Введите номер файла, который хотите прочитать. 1 - основной файл, 2 - его копия: ")
+            if file_number == '1':
+                print(*read_file(file_name), sep="\n")
+            elif file_number == '2':
+                print(*read_file(copy_file_name), sep="\n")
+            else:
+                print("Файла с таким номером не существует")
+        elif command == 'c':
+            if not exists(copy_file_name):
+                create_file(copy_file_name)
+            is_valid_string_number = False
+            while not is_valid_string_number:
+                try:
+                    string = int(input("Введите номер строки для копирования: "))
+                    copy_file(file_name, copy_file_name, string)
+                    is_valid_string_number = True
+                except ValueError:
+                    print("Не валидный номер строки")
+                    continue
 main()
